@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Mi perfil{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <h1 class="h3 mb-0">Mi perfil</h1>
+        </div>
+        <div class="card-body p-4">
+          <div class="text-center mb-4">
+            {% if user.profile.avatar %}
+              <img src="{{ user.profile.avatar.url }}" alt="Avatar de {{ user.username }}" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+            {% else %}
+              <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 150px;">
+                <span class="text-white" style="font-size: 60px;">?</span>
+              </div>
+            {% endif %}
+          </div>
+          
+          <div class="card bg-light border mb-4">
+            <div class="card-body">
+              <div class="mb-3">
+                <h5 class="text-muted mb-1">Usuario:</h5>
+                <p class="h5">{{ user.username }}</p>
+              </div>
+              
+              <div class="mb-3">
+                <h5 class="text-muted mb-1">Email:</h5>
+                <p class="h5">{{ user.email }}</p>
+              </div>
+              
+              <div>
+                <h5 class="text-muted mb-1">Bio:</h5>
+                <p>{% if user.profile.bio %}{{ user.profile.bio }}{% else %}No sumaste tu biografía todavía.{% endif %}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-center">
+            <a href="{% url 'profile-edit' %}" class="btn btn-success">
+              Editar perfil
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

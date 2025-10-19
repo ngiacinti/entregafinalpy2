@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block content %}
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-md-6">{{ form.q }}</div>
+    <div class="col-auto"><button class="btn btn-outline-primary">Buscar</button></div>
+  </form>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {% for post in posts %}
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">
+          <a href="{% url 'post_detail' post.pk %}" class="text-decoration-none">{{ post.title }}</a>
+        </h5>
+        <p class="card-text">{{ post.content|truncatewords:30|default:"(sin contenido)" }}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="badge bg-secondary">{{ post.created_at|date:"d/m/Y H:i" }}</span>
+          <div>
+            <a href="{% url 'post_detail' post.pk %}" class="btn btn-sm btn-outline-primary">Ver más</a>
+            <a href="{% url 'update_post' post.pk %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+            <a href="{% url 'delete_post' post.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No hay páginas aún. ¡Creá la primera haciendo clic en "Nueva página"!</p>
+  {% endfor %}
+  
+ 
+  {% if posts.paginator.num_pages > 1 %}
+  <nav aria-label="Navegación de páginas">
+    <ul class="pagination justify-content-center">
+      {% if posts.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ posts.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Anterior">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" aria-hidden="true">&laquo;</span>
+        </li>
+      {% endif %}
+      
+      {% for i in posts.paginator.page_range %}
+        {% if posts.number == i %}
+          <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{ i }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      
+      {% if posts.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ posts.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Siguiente">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" aria-hidden="true">&raquo;</span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+{% endblock %}
